@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29230.47
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScheduleWebApp", "ScheduleWebApp\ScheduleWebApp.csproj", "{3F117E85-BF33-4DDF-AC03-0382CCBBAF0F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3F117E85-BF33-4DDF-AC03-0382CCBBAF0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F117E85-BF33-4DDF-AC03-0382CCBBAF0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F117E85-BF33-4DDF-AC03-0382CCBBAF0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F117E85-BF33-4DDF-AC03-0382CCBBAF0F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {82F9615E-481D-4945-BDD2-0507288BDD4B}
+	EndGlobalSection
+EndGlobal
