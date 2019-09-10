@@ -32,10 +32,20 @@ namespace ScheduleWebApp.Controllers
         }
 
         // GET: api/StaffHoursWorked/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
-        {
-            return "value";
+        [HttpGet("{id}/{startDateTimeQuery}")]
+        public IEnumerable<staffHoursWorked> GetStaffHoursWorked(int id, DateTime startDateTimeQuery)
+        {            
+            DateTime lastDayDateTimeQuery = startDateTimeQuery.AddDays(7);
+
+            var staffHours = from s in _context.staffHoursWorkedTbl
+                .Include(c => c.staff)                
+                .Where(s => s.staffId == id &&
+                s.startDateAndTime >= startDateTimeQuery &&
+                s.startDateAndTime <= lastDayDateTimeQuery)
+                .ToList()
+                select s;          
+           
+            return staffHours;            
         }
 
         // POST: api/StaffHoursWorked

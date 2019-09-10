@@ -32,14 +32,7 @@ namespace ScheduleWebApp.Controllers
                 .Include(c => c.student)
                 .Include(c => c.staff)
                 .ToList();
-        }
-
-        //// GET: api/ScheduleDateAndTime/5
-        //[HttpGet("{id}", Name = "Get")]
-        //public string GetScheduleDateAndTime(int id)          
-        //{
-        //    return _context.ScheduleDateAndTimeTbl.FindAsync(id);            
-        //}
+        }   
 
         //POST: api/ScheduleDateAndTime
         [HttpPost]
