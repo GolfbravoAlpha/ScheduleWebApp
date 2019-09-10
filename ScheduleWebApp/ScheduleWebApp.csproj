@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\staffHoursWorkedController.cs" />
     <Compile Remove="Data\Migrations\20190909142658_InitialMigration.cs" />
     <Compile Remove="Data\Migrations\20190909142658_InitialMigration.Designer.cs" />
   </ItemGroup>

@@ -28,42 +28,61 @@ namespace ScheduleWebApp.Controllers
         public IEnumerable<ScheduleDateAndTime> GetScheduleDateAndTime()
         {
             //the include allows information from another table to come through 
-            return _context.ScheduleDateAndTimes
+            return _context.ScheduleDateAndTimeTbl
                 .Include(c => c.student)
                 .Include(c => c.staff)
                 .ToList();
         }
 
-        // GET: api/ScheduleDateAndTime/5
-        [HttpGet("{id}", Name = "Get")]
-        public string GetScheduleDateAndTime(int id)
-        {
-            return "value";
-        }
+        //// GET: api/ScheduleDateAndTime/5
+        //[HttpGet("{id}", Name = "Get")]
+        //public string GetScheduleDateAndTime(int id)          
+        //{
+        //    return _context.ScheduleDateAndTimeTbl.FindAsync(id);            
+        //}
 
         //POST: api/ScheduleDateAndTime
         [HttpPost]
         public async Task<ActionResult<ScheduleDateAndTime>> PostScheduleDateAndTime
             (ScheduleDateAndTime scheduleObject)
         {
-            _context.ScheduleDateAndTimes.Add(scheduleObject);
+            _context.ScheduleDateAndTimeTbl.Add(scheduleObject);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetScheduleDateAndTime),
-                new { id = scheduleObject.id }, scheduleObject);
-            //return Ok(scheduleObject);
+                new { id = scheduleObject.id }, scheduleObject);            
         }
 
         // PUT: api/ScheduleDateAndTime/5
-        [HttpPut("{id}")]
-        public void PutScheduleDateAndTime(int id, [FromBody] string value)
+        [HttpPut("{id}")]    
+        public async Task<IActionResult> PutScheduleDateAndTime(int id, ScheduleDateAndTime scheduleObject)
         {
+            if (id != scheduleObject.id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(scheduleObject).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: api/ScheduleDateAndTime/5
         [HttpDelete("{id}")]
-        public void DeleteScheduleDateAndTime(int id)
+        public async Task<IActionResult> DeleteScheduleDateAndTime(int id)
         {
+            var scheduleObject = await _context.ScheduleDateAndTimeTbl.FindAsync(id);
+
+            if (scheduleObject == null)
+            {
+                return NotFound();
+            }
+
+            _context.ScheduleDateAndTimeTbl.Remove(scheduleObject);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

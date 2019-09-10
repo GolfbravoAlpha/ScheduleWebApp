@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ScheduleWebApp.Data;
 
 namespace ScheduleWebApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190910170105_AddStaffHoursWorkedTbl")]
+    partial class AddStaffHoursWorkedTbl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -204,7 +206,7 @@ namespace ScheduleWebApp.Data.Migrations
 
                     b.HasIndex("studentId");
 
-                    b.ToTable("ScheduleDateAndTimeTbl");
+                    b.ToTable("ScheduleDateAndTimes");
                 });
 
             modelBuilder.Entity("ScheduleWebApp.Models.Staff", b =>
@@ -219,7 +221,7 @@ namespace ScheduleWebApp.Data.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("StaffTbl");
+                    b.ToTable("Staffs");
                 });
 
             modelBuilder.Entity("ScheduleWebApp.Models.Student", b =>
@@ -240,7 +242,7 @@ namespace ScheduleWebApp.Data.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("StudentTbl");
+                    b.ToTable("Students");
                 });
 
             modelBuilder.Entity("ScheduleWebApp.Models.staffHoursWorked", b =>
@@ -259,7 +261,7 @@ namespace ScheduleWebApp.Data.Migrations
 
                     b.HasIndex("staffId");
 
-                    b.ToTable("staffHoursWorkedTbl");
+                    b.ToTable("staffHoursWorkeds");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

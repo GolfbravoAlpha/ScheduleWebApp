@@ -10,9 +10,12 @@ namespace ScheduleWebApp.Data
 
     public class ApplicationDbContext : IdentityDbContext
     {
-        public DbSet<ScheduleDateAndTime> ScheduleDateAndTimes { get; set; }
-        public DbSet<Staff> Staffs { get; set; }
-        public DbSet<Student> Students { get; set; }
+        public DbSet<ScheduleDateAndTime> ScheduleDateAndTimeTbl { get; set; }
+        public DbSet<Staff> StaffTbl { get; set; }
+        public DbSet<Student> StudentTbl { get; set; }
+
+        public DbSet<staffHoursWorked> staffHoursWorkedTbl { get; set; }
+        
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
