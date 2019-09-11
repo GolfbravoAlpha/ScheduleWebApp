@@ -1,0 +1,223 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/lib/Jquery-ui/jquery-3.3.1.min.js"></script>
+<link href="~/lib/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+
+
+<header>
+    <h1 align="center">Schedule for staff _______</h1>
+</header>
+
+
+<table id="scheduleTable" border="1" width="1200">
+    <tr>
+        <th>Days</th>
+        <th colspan="4">8:00am </th>
+
+        <th colspan="4">9:00am </th>
+
+        <th colspan="4">10:00am</th>
+
+        <th colspan="4">11:00am</th>
+
+        <th colspan="4">12:00pm</th>
+
+        <th colspan="4">1:00pm</th>
+
+        <th colspan="4">2:00pm </th>
+
+        <th colspan="4">3:00pm </th>
+
+        <th colspan="4">4:00pm </th>
+
+        <th colspan="4">5:00pm </th>
+
+        <th colspan="4">6:00pm </th>
+    </tr>
+
+
+    <tr id="0_RowTable"></tr>
+
+</table>
+
+<div align="center">
+    <p></p>
+    <p>Select Date</p>
+    <input id="datePickerTwo" value="Click to enter date" />
+    <button id="weekButton">Go to selected week</button>
+
+</div>
+
+
+
+@section scripts
+{
+    <script src="~/lib/Jquery-ui/jquery-ui-1.12.1.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+
+            for (j = 0; j < 5; j++) {
+                i = 800;
+                modulusTable = i;
+
+                $('#' + j + '_RowTable').append('<td id="r' + j + 'days"' + '>' + days[j] + '</option>');
+
+                for (i; i < 1900; i++) {
+                    if (i % modulusTable == 60) {
+                        modulusTable += 100;
+                        i += 39;
+                    }
+                    else {
+                        $('#' + j + '_RowTable').append('<td id=r' + j + 't_' + i + '>' + "&nbsp;" + '</option>');
+                        i += 14;
+                    }
+
+                    k = j + 1;
+                }
+                $('#' + j + '_RowTable').after('<tr id="' + k + '_RowTable"></tr>')
+            }
+
+            $.ajax({
+                method: 'GET',
+                url: 'https://localhost:44394/api/StaffHoursWorked',
+                dataType: 'json'
+            }).done(function (data) {
+                $.map(data, function (post, dataLoop) {
+
+
+                    //console.log(data);
+                    //create the correct data needed, you have to split the data in two parts and then join them together to get rid of the colon
+
+                    //convert the first part of the start time into an int
+                    hourStart = post.startDateAndTime.substr(11).slice(0, -6);
+                    intHourStart = parseInt(hourStart);
+
+                    //convert the second part of the start time into an int
+
+                    minuteStart = post.startDateAndTime.substr(14).slice(0, -3);
+                    intMinuteStart = parseInt(minuteStart);
+
+                    //convert the whole time into an int and get rid of colon
+                    fullTime = hourStart + minuteStart;
+                    intFullStartTime = parseInt(fullTime);
+
+                    //to show the end time
+
+                    hourEnd = post.endDateAndTime.substr(11).slice(0, -6);
+                    intHourEnd = parseInt(hourEnd);
+
+                    minuteEnd = post.endDateAndTime.substr(14).slice(0, -3);
+                    intMinuteEnd = parseInt(minuteEnd);
+
+                    fullEndTime = hourEnd + minuteEnd;
+                    intFullEndTime = parseInt(fullEndTime);
+
+
+
+
+
+                    // to loop through the start time to the end time by 15 minute intervals and missing the end time
+                    ModulusintFullStartTime = intHourStart * 100;
+
+                    for (i = intFullStartTime; i < intFullEndTime; i++) {
+
+                        if (i % ModulusintFullStartTime == 60) {
+                            ModulusintFullStartTime += 100;
+                            i += 40;
+                            if (i == intFullEndTime) {
+                                break;
+                            }
+                            else {
+                                $('#r' + dataLoop + 't_' + i).replaceWith("<td class='blueScheduleTime' bgcolor='#0000FF'></td>");
+
+                            }
+                        }
+                        else {
+                            $('#r' + dataLoop + 't_' + i).replaceWith("<td class='blueScheduleTime' bgcolor='#0000FF'></td>");
+
+
+                        }
+                        i += 14;
+                    }
+
+                });
+
+            });
+            //if table cell is clicked
+
+            $('.blueScheduleTime').on('click', function () {
+
+                alert('You have clicked!');
+            });
+
+
+
+
+            //table id
+            //the month, in the middle starts has minus one to correspond to the correct month
+            var mondayDate = new Date(2019, 9 - 1, 30);
+
+
+
+            //to get the sunday date
+            function addDays(date) {
+                var result = new Date(date);
+                result.setDate(result.getDate() + 6);
+                return result;
+            }
+
+            var sundayDate = addDays(mondayDate).toString();
+            var yearPartSundayDate = sundayDate.substr(11).slice(0, -40);
+            var dayPartSundayDate = sundayDate.substr(8).slice(0, -45);
+
+            var firstPartSundayDate = new Date(sundayDate);
+            var monthNumberFirstPartSundayDate = firstPartSundayDate.getMonth() + 1;
+
+            var sundayFullDate = new Date(yearPartSundayDate, monthNumberFirstPartSundayDate - 1, dayPartSundayDate);
+
+
+            var dapLoopIterator = 0;
+            var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+            for (var dayLoop = new Date(mondayDate); dayLoop <= sundayFullDate; dayLoop.setDate(dayLoop.getDate() + 1)) {
+                var dayLoopToString = dayLoop.toDateString();
+                var dayPartDayLoop = dayLoopToString.substr(8).slice(0, -5);
+                var monthPartDayLoop = dayLoop.getMonth() + 1;
+                var yearPartDayLoop = dayLoopToString.substr(11);
+                var totalPartDayLoop = yearPartDayLoop + "-" + monthPartDayLoop + "-" + dayPartDayLoop;
+
+                $("#r" + dapLoopIterator + "days").replaceWith('<td id="' + totalPartDayLoop + '">' + days[dapLoopIterator] + '</td>');
+                dapLoopIterator += 1;
+            }
+
+            //to choose date
+            $('#datePickerTwo').datepicker({
+                dateFormat: "yy-mm-dd",
+                changeMonth: true,
+                changeYear: true,
+                yearRange: "2019:2030",
+                beforeShowDay: function (date) { return [date.getDay() == 1, ""] }
+
+            });
+
+
+            $("#weekButton").click(function () {
+                var datePickerValue = $('#datePickerTwo').val();
+                console.log(datePickerValue);
+            });
+
+        });
+
+
+
+    </script>
+}
+

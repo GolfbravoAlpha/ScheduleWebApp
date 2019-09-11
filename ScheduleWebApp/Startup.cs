@@ -35,7 +35,8 @@ namespace ScheduleWebApp
             //user logins 
             services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);          
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);     
+            
 
    
         }
