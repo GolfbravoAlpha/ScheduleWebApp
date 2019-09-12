@@ -214,6 +214,19 @@
                 console.log(datePickerValue);
             });
 
+
+           //for staff
+            $.ajax({
+                method: 'GET',
+                url: 'http://localhost:58371/api/Staff',
+                dataType: 'json'
+            }).done(function (data) {
+                $.map(data, function (post, j) {
+                    staffName = post.name;
+                    staffId = post.id;                    
+                    $('#staffList').append("<option id=" + staffId + " value='" + staffName + "'>" + staffName + "</option>");
+                });
+            });
         });
 
 

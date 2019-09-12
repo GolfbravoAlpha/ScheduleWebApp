@@ -4,5 +4,165 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<script src="~/lib/Jquery-ui/jquery-3.3.1.min.js"></script>
+<header>
+    <h1 align="center">Today's Schedule</h1>
+</header>
+
+
+<table id="scheduleTable" border="1" width="1200">
+    <tr>
+        <th>Student</th>
+        <th colspan="4">8:00am </th>
+
+        <th colspan="4">9:00am </th>
+
+        <th colspan="4">10:00am</th>
+
+        <th colspan="4">11:00am</th>
+
+        <th colspan="4">12:00pm</th>
+
+        <th colspan="4">1:00pm</th>
+
+        <th colspan="4">2:00pm </th>
+
+        <th colspan="4">3:00pm </th>
+
+        <th colspan="4">4:00pm </th>
+
+        <th colspan="4">5:00pm </th>
+
+        <th colspan="4">6:00pm </th>
+    </tr>
+
+
+    <tr id="0_RowTable"></tr>
+
+</table>
+
+<p>&nbsp</p>
+<p>&nbsp</p>
+<p align="right">
+    Blue = unassigned
+    <br />Red = Urgent
+    <br />Green = Assigned
+</p>
+
+
+@section scripts
+{
+    <script>
+
+        $(document).ready(function () {
+
+
+            for (j = 0; j < 15; j++) {
+                i = 800;
+                modulusTable = i;
+
+                $('#' + j + '_RowTable').append('<td id="r' + j + 't_student"' + '>' + "&nbsp;" + '</option>');
+
+                for (i; i < 1900; i++) {
+                    if (i % modulusTable == 60) {
+                        modulusTable += 100;
+                        i += 39;
+                    }
+                    else {
+                        $('#' + j + '_RowTable').append('<td id=r' + j + 't_' + i + '>' + "&nbsp;" + '</option>');
+                        i += 14;
+                    }
+
+                    k = j + 1;
+                }
+                $('#' + j + '_RowTable').after('<tr id="' + k + '_RowTable"></tr>')
+            }
+
+
+            $.ajax({
+                method: 'GET',
+                url: 'https://localhost:44394/api/ScheduleDateAndTime',
+                dataType: 'json'
+            }).done(function (data) {
+                $.map(data, function (post, dataLoop) {
+
+
+                    //console.log(data);
+                    //create the correct data needed, you have to split the data in two parts and then join them together to get rid of the colon
+
+                    //convert the first part of the start time into an int
+                    hourStart = post.startDateAndTime.substr(11).slice(0, -6);
+                    intHourStart = parseInt(hourStart);
+
+                    //convert the second part of the start time into an int
+
+                    minuteStart = post.startDateAndTime.substr(14).slice(0, -3);
+                    intMinuteStart = parseInt(minuteStart);
+
+                    //convert the whole time into an int and get rid of colon
+                    fullTime = hourStart + minuteStart;
+                    intFullStartTime = parseInt(fullTime);
+
+                    //to show the end time
+
+                    hourEnd = post.endDateAndTime.substr(11).slice(0, -6);
+                    intHourEnd = parseInt(hourEnd);
+
+                    minuteEnd = post.endDateAndTime.substr(14).slice(0, -3);
+                    intMinuteEnd = parseInt(minuteEnd);
+
+                    fullEndTime = hourEnd + minuteEnd;
+                    intFullEndTime = parseInt(fullEndTime);
+
+
+
+
+
+                    // to loop through the start time to the end time by 15 minute intervals and missing the end time
+                    ModulusintFullStartTime = intHourStart * 100;
+
+                    for (i = intFullStartTime; i < intFullEndTime; i++) {
+
+                        if (i % ModulusintFullStartTime == 60) {
+                            ModulusintFullStartTime += 100;
+                            i += 40;
+                            if (i == intFullEndTime) {
+                                break;
+                            }
+                            else {
+                                $('#r' + dataLoop + 't_' + i).replaceWith("<td class='blueScheduleTime' bgcolor='#0000FF'></td>");
+
+                            }
+                        }
+                        else {
+                            $('#r' + dataLoop + 't_' + i).replaceWith("<td class='blueScheduleTime' bgcolor='#0000FF'></td>");
+
+
+                        }
+                        i += 14;
+                    }
+
+                    // add student name to student column
+                    studentName = post.student.name;
+                    $("#r" + dataLoop + "t_student").replaceWith("<td>" + studentName + "</td>");
+                });
+
+
+                //if table cell is clicked
+
+                $('.blueScheduleTime').on('click', function () {
+
+                    alert('You have clicked!');
+                });
+
+
+
+            });
+        });
+
+    </script>
+
+}
+
+
 

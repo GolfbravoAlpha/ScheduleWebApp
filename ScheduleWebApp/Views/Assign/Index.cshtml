@@ -1,0 +1,208 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/lib/Jquery-ui/jquery-3.3.1.min.js"></script>
+<link href="~/lib/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+
+<h2 align="center">Assign and Notes</h2>
+
+<div align="center">
+    <div>
+        <p>select student</p>
+        <select id='studentList'>   
+        </select>
+    </div>
+    <br />
+
+    <div>
+        <p>select staff memeber to assign</p>
+        <select id='staffList'>
+            <option id="">none</option>
+        </select>
+
+    </div>
+    <br />
+
+    <div>
+        <p>select Date</p>
+        <input id="datePicker" value="Click to enter date" />
+    </div>
+    <br />
+
+    <div>
+        <p>select start time</p>
+        <select id='firstPartStartTimeList'></select>
+        <select id='secondPartStartTimeList'></select>
+    </div>
+    <br />
+
+    <div>
+        <p>select end time</p>
+        <select id='firstPartEndTimeList'></select>
+        <select id='secondPartEndTimeList'></select>
+    </div>
+    <br />
+
+    <div>
+        <br />
+        <button id="assign">Assign</button>
+    </div>
+    <div>
+        <br />
+        <button id="test">Test</button>
+    </div>
+</div>
+
+
+
+@section scripts
+{
+    <script src="~/lib/Jquery-ui/jquery-ui-1.12.1.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            //date selection
+            $('#datePicker').datepicker({
+                dateFormat: "yy-mm-dd",
+                changeMonth: true,
+                changeYear: true,
+                yearRange: "2019:2030"
+            });
+
+
+            //1st part of start time
+            for (i = 8; i <= 18; i++) {
+                if (i < 10) {
+                    $('#firstPartStartTimeList').append('<option>0' + i + '</option>');
+                }
+                else {
+                    $('#firstPartStartTimeList').append('<option>' + i + '</option>');
+                }
+
+            }
+
+            //2nd part of start time
+            for (i = 0; i <= 59; i++) {
+                if (i < 10) {
+                    $('#secondPartStartTimeList').append('<option>0' + i + '</option>');
+                } else {
+                    $('#secondPartStartTimeList').append('<option>' + i + '</option>');
+                }
+
+            }
+
+            //1st part of end time
+            for (i = 8; i <= 19; i++) {
+                if (i < 10) {
+                    $('#firstPartEndTimeList').append('<option>0' + i + '</option>');
+                }
+                else {
+                    $('#firstPartEndTimeList').append('<option>' + i + '</option>');
+                }
+            }
+
+            //2nd part of end time
+            for (i = 0; i <= 59; i++) {
+                if (i < 10) {
+                    $('#secondPartEndTimeList').append('<option>0' + i + '</option>');
+                } else {
+                    $('#secondPartEndTimeList').append('<option>' + i + '</option>');
+                }
+            }
+
+            //for students
+            $.ajax({
+                method: 'GET',
+                url: 'https://localhost:44394/api/Student',
+                dataType: 'json'
+
+            }).done(function (data) {
+                $.map(data, function (post, j) {
+                    studentName = post.name;
+                    studentId = post.id;
+                    $('#studentList').append("<option id=" + studentId + " value='" + studentName + "'>" + studentName + "</option>");
+
+                });
+            });
+
+            //for staff
+            $.ajax({
+                method: 'GET',
+                url: 'https://localhost:44394/api/Staff',
+                dataType: 'json'
+            }).done(function (data) {
+                $.map(data, function (post, j) {
+                    staffName = post.name;
+                    staffId = post.id;
+                    $('#staffList').append("<option id=" + staffId + " value='" + staffName + "'>" + staffName + "</option>");
+                });
+            });
+
+
+            //saving the selection done. I need to add a button and then run the code below.
+
+            $("#assign").click(function () {
+                //get the information selected by the user on staff and student
+                var studentIdSelected = $('#studentList').find(":selected").attr('id');
+                var staffIdSelected = $('#staffList').find(":selected").attr('id');
+
+                var studentSelected = $('#studentList').find(":selected").val();
+                var staffSelected = $('#staffList').find(":selected").val();
+
+                var firstPartSelectedStartTime = $('#firstPartStartTimeList').find(":selected").val();
+                var secondPartSelectedStartTime = $('#secondPartStartTimeList').find(":selected").val();
+
+                var firstPartSelectedEndTime = $('#firstPartEndTimeList').find(":selected").val();
+                var secondPartSelectedEndTime = $('#secondPartEndTimeList').find(":selected").val();
+
+                var datePickerValue = $('#datePicker').val();
+
+                var startTotalTimeAndDate = datePickerValue + "T" + firstPartSelectedStartTime + ":" + secondPartSelectedStartTime + ":00";
+                var endTotalTimeAndDate = datePickerValue + "T" + firstPartSelectedEndTime + ":" + secondPartSelectedEndTime + ":00";
+                var startTime = firstPartSelectedStartTime + ":" + secondPartSelectedStartTime;
+                var endTime = firstPartSelectedEndTime + ":" + secondPartSelectedEndTime;
+
+
+
+
+
+                $.ajax({
+                    method: 'POST',
+                    url: 'https://localhost:44394/api/ScheduleDateAndTime',
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        "startDateAndTime": startTotalTimeAndDate,
+                        "endDateAndTime": endTotalTimeAndDate,
+                        "studentId": studentIdSelected,
+                        "staffId": staffIdSelected
+                    }),
+                    success: function (data) {
+                        alert("You have assigned staff member " + staffSelected + " to student " + studentSelected + " on " + datePickerValue + " starting at " + startTime + " and ending at " + endTime);
+                        //if (data.d == "success") {
+                        //    alert("Data saved successfully");
+                        //    $('#<%=txtContactName.ClientID%>').val('');
+                        //    $('#<%=txtContactNo.ClientID%>').val('');
+                        //}
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert(thrownError + " have you checked that you have selected a date in the calander?\n Please ensure all fields have been correctly entered");
+                    }
+                });
+
+            });
+
+
+            //test data output
+            $("#test").click(function () {
+                var studentIdSelected = $('#studentList').find(":selected").attr('id');
+                console.log(studentIdSelected);
+            });
+        });
+    </script>
+}
+
