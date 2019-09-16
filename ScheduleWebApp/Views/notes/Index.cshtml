@@ -9,7 +9,7 @@
 
 <h2>Test</h2>
 
-<table id="scheduleTable" border="1" width="1200">
+@*<table id="scheduleTable" border="1" width="1200">
     <tr>
         <th>Days</th>
         <th>1 </th>
@@ -22,7 +22,7 @@
 
 </table>
 
-<button id="testButton">Test</button>
+<button id="testButton">Test</button>*@
 
 
 @section scripts
@@ -32,54 +32,35 @@
 
     <script>
         $(document).ready(function () {
-            //console.log("test"); 
+
+            date1String = "8:15";
+            date2String = "8:30";
 
 
-            loopTable();
+            var test = Hourdiff(date1String, date2String)
+            console.log(test);
+          
 
+            function Hourdiff(start, end){
+                start = start.split(":");
+                end = end.split(":");
+                var startDate = new Date(0, 0, 0, start[0], start[1], 0);
+                var endDate = new Date(0, 0, 0, end[0], end[1], 0);
+                var diff = endDate.getTime() - startDate.getTime();
+                var hours = Math.floor(diff / 1000 / 60 / 60);
+                diff -= hours * 1000 * 60 * 60;
+                var minutes = Math.floor(diff / 1000 / 60);
 
-            $("#testButton").click(function () {
-                clearTable();
-                
-            });
+                // If using time pickers with 24 hours format, add the below line get exact hours
+                if (hours < 0)
+                    hours = hours + 24;
 
-
-
-
-
-
-            function loopTable() {
-
-                for (j = 0; j < 3; j++) {                
-
-                    for (i = 0; i < 3; i++) {        
-                        console.log("<td id='t_" + i + "' bgcolor='#0000FF'></td>");
-                            $('#' + j + '_RowTable').append("<td id='t_" + i + "' bgcolor='#0000FF'>&nbsp;</td>");                       
-                    }
-
-                k = j + 1;
-                $('#' + j + '_RowTable').after('<tr id="' + k + '_RowTable"></tr>')
-                }
-
+                return (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
             }
-
-
-
-            function clearTable() {
-
-                for (j = 0; j < 3; j++) {                
-
-                    for (i = 0; i < 3; i++) {                   
-                            $('#' + j + '_RowTable').replaceWith('<td id=t_' + i + '>' + "&nbsp;" + '</td>');                       
-                    }
-
-                k = j + 1;
-                $('#' + j + '_RowTable').after('<tr id="' + k + '_RowTable"></tr>')
-                }
-
-            }
-
-
+      
+            
+            
+            
         });
 
     </script>
