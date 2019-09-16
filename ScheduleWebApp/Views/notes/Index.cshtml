@@ -4,101 +4,17 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
-
-@section scripts{
-
-    <script>
-        //table id
-        //the month, in the middle starts has minus one to correspond to the correct month
-        var mondayDate = new Date(2019, 9 - 1, 30);
-
-        //to get the sunday date
-        function addDays(date) {
-            var result = new Date(date);
-            result.setDate(result.getDate() + 6);
-            return result;
-        }
-
-        var sundayDate = addDays(mondayDate).toString();
-        var yearPartSundayDate = sundayDate.substr(11).slice(0, -40);
-        var dayPartSundayDate = sundayDate.substr(8).slice(0, -45);
-
-        var firstPartSundayDate = new Date(sundayDate);
-        var monthNumberFirstPartSundayDate = firstPartSundayDate.getMonth() + 1;
-
-        var sundayFullDate = new Date(yearPartSundayDate, monthNumberFirstPartSundayDate - 1, dayPartSundayDate);
-
-
-        var dapLoopIterator = 0;
-
-        var days = [];
-
-        for (var dayLoop = new Date(mondayDate); dayLoop <= sundayFullDate; dayLoop.setDate(dayLoop.getDate() + 1)) {
-            var dayLoopToString = dayLoop.toDateString();
-            var dayPartDayLoop = dayLoopToString.substr(8).slice(0, -5);
-            var monthPartDayLoop = dayLoop.getMonth() + 1;
-            var yearPartDayLoop = dayLoopToString.substr(11);
-            var totalPartDayLoop = yearPartDayLoop + "-" + monthPartDayLoop + "-" + dayPartDayLoop;
-            days.push(totalPartDayLoop);
-
-
-        }
-        console.log(days);
-
-
-    </script>
-
-
-
-
-}
-
-
-
-
-
-///old data
-
-
-@{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
 <script src="~/lib/Jquery-ui/jquery-3.3.1.min.js"></script>
 <link href="~/lib/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
 
-
-<header>
-    <h1 id="MainHeader" align="center">Schedule for staff _______</h1>
-</header>
-
+<h2>Test</h2>
 
 <table id="scheduleTable" border="1" width="1200">
     <tr>
         <th>Days</th>
-        <th colspan="4">8:00am </th>
+        <th>1 </th>
+        <th>2 </th>
 
-        <th colspan="4">9:00am </th>
-
-        <th colspan="4">10:00am</th>
-
-        <th colspan="4">11:00am</th>
-
-        <th colspan="4">12:00pm</th>
-
-        <th colspan="4">1:00pm</th>
-
-        <th colspan="4">2:00pm </th>
-
-        <th colspan="4">3:00pm </th>
-
-        <th colspan="4">4:00pm </th>
-
-        <th colspan="4">5:00pm </th>
-
-        <th colspan="4">6:00pm </th>
     </tr>
 
 
@@ -106,248 +22,65 @@
 
 </table>
 
-<div align="center">
-    <p></p>
-    <p></p>
-    <select id='staffList'>
-        <option id="">none</option>
-    </select>
-    <input id="datePickerTwo" value="Click to enter date" />
-    <button id="selectionButton">Go to selected week</button>
-
-</div>
-
+<button id="testButton">Test</button>
 
 
 @section scripts
 {
     <script src="~/lib/Jquery-ui/jquery-ui-1.12.1.js"></script>
+
+
     <script>
-
         $(document).ready(function () {
-
-            //Initial table creation
-            startWorkTime = 800;
-            endWorkTime = 1900;
-
-            var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+            //console.log("test"); 
 
 
-            for (j = 0; j < 7; j++) {
-                i = startWorkTime;
-                modulusTable = i;
-                $('#' + j + '_RowTable').append('<td id="r' + j + 'days"' + '>' + days[j] + '</option>');
+            loopTable();
 
-                for (i; i < endWorkTime; i++) {
-                    if (i % modulusTable == 60) {
-                        modulusTable += 100;
-                        i += 39;
+
+            $("#testButton").click(function () {
+                clearTable();
+                
+            });
+
+
+
+
+
+
+            function loopTable() {
+
+                for (j = 0; j < 3; j++) {                
+
+                    for (i = 0; i < 3; i++) {        
+                        console.log("<td id='t_" + i + "' bgcolor='#0000FF'></td>");
+                            $('#' + j + '_RowTable').append("<td id='t_" + i + "' bgcolor='#0000FF'>&nbsp;</td>");                       
                     }
-                    else {
-                        $('#' + j + '_RowTable').append('<td id="r' + j + 't_' + i + '_d_' + days[j] + '">' + "&nbsp;" + '</option>');
-                        i += 14;
-                    }
 
-                    k = j + 1;
-                }
+                k = j + 1;
                 $('#' + j + '_RowTable').after('<tr id="' + k + '_RowTable"></tr>')
+                }
+
             }
 
 
 
+            function clearTable() {
 
+                for (j = 0; j < 3; j++) {                
 
-
-
-            //to choose date
-            $('#datePickerTwo').datepicker({
-                dateFormat: "yy-mm-dd",
-                changeMonth: true,
-                changeYear: true,
-                yearRange: "2019:2030",
-                beforeShowDay: function (date) { return [date.getDay() == 1, ""] }
-
-            });
-
-
-
-
-            //Populate staff member list
-            $.ajax({
-                method: 'GET',
-                url: 'https://localhost:44394/api/Staff',
-                dataType: 'json'
-            }).done(function (data) {
-                $.map(data, function (post, j) {
-                    staffName = post.name;
-                    staffId = post.id;
-                    $('#staffList').append("<option id=" + staffId + ">" + staffName + "</option>");
-                });
-            });
-
-
-
-            //button press
-            $("#selectionButton").click(function () {
-                var datePickerValue = $('#datePickerTwo').val();
-                var staffValue = $('option:selected').attr("id");
-                var staffNameSelected = $('#staffList').val();
-
-
-                $('#MainHeader').replaceWith("<h1 id='MainHeader' align='center'>Schedule for staff " + staffNameSelected + "</h1>");
-
-                //set Table id acording to the selected date
-                //the month, in the middle starts has minus one to correspond to the correct month
-                var mondayDate = new Date(datePickerValue);
-
-                //to get the sunday date
-                function addDays(date) {
-                    var result = new Date(date);
-                    result.setDate(result.getDate() + 7);
-                    return result;
-                }
-
-                var sundayDate = addDays(mondayDate).toString();
-                var yearPartSundayDate = sundayDate.substr(11).slice(0, -40);
-                var dayPartSundayDate = sundayDate.substr(8).slice(0, -45);
-
-                var firstPartSundayDate = new Date(sundayDate);
-                var monthNumberFirstPartSundayDate = firstPartSundayDate.getMonth() + 1;
-
-                var sundayFullDate = new Date(yearPartSundayDate, monthNumberFirstPartSundayDate - 1, dayPartSundayDate);
-
-
-
-                var dayTableIdentifier = [];
-
-                for (var dayLoop = new Date(mondayDate); dayLoop <= sundayFullDate; dayLoop.setDate(dayLoop.getDate() + 1)) {
-                    var dayLoopToString = dayLoop.toDateString();
-                    var dayPartDayLoop = dayLoopToString.substr(8).slice(0, -5);
-                    var monthPartDayLoop = dayLoop.getMonth() + 1;
-                    var yearPartDayLoop = dayLoopToString.substr(11);
-                    var totalPartDayLoop = yearPartDayLoop + "-" + monthPartDayLoop + "-" + dayPartDayLoop;
-                    dayTableIdentifier.push(totalPartDayLoop);
-
-
-                }
-                console.log(dayTableIdentifier);
-
-
-                //insert date values
-                for (j = 0; j < 7; j++) {
-                    ModulusStartWorkTime = startWorkTime;
-
-                    for (i = startWorkTime; i < endWorkTime; i++) {
-
-                        if (i % ModulusStartWorkTime == 60) {
-                            ModulusStartWorkTime += 100;
-                            i += 40;
-                            if (i == endWorkTime) {
-                                break;
-                            }
-                            else {
-                                $('#r' + j + 't_' + i).replaceWith("<td id=r" + j + '_ymd_' + dayTableIdentifier[j] + '_t_' + i + "></td>");
-
-                            }
-                        }
-                        else {
-                            $('#r' + j + 't_' + i).replaceWith("<td id=r" + j + '_ymd_' + dayTableIdentifier[j] + '_t_' + i + "></td>");
-
-
-                        }
-                        i += 14;
-
-
-
-
+                    for (i = 0; i < 3; i++) {                   
+                            $('#' + j + '_RowTable').replaceWith('<td id=t_' + i + '>' + "&nbsp;" + '</td>');                       
                     }
+
+                k = j + 1;
+                $('#' + j + '_RowTable').after('<tr id="' + k + '_RowTable"></tr>')
                 }
 
+            }
 
-
-
-                $.ajax({
-                    method: 'GET',
-                    url: 'https://localhost:44394/api/StaffHoursWorked/' + staffValue + '/' + datePickerValue,
-                    dataType: 'json'
-                }).done(function (data) {
-                    $.map(data, function (post, dataLoop) {
-
-
-
-
-
-                        //console.log(data);
-                        //create the correct data needed, you have to split the data in two parts and then join them together to get rid of the colon
-
-                        //convert the first part of the start time into an int
-                        hourStart = post.startDateAndTime.substr(11).slice(0, -6);
-                        intHourStart = parseInt(hourStart);
-
-                        //convert the second part of the start time into an int
-
-                        minuteStart = post.startDateAndTime.substr(14).slice(0, -3);
-                        intMinuteStart = parseInt(minuteStart);
-
-                        //convert the whole time into an int and get rid of colon
-                        fullTime = hourStart + minuteStart;
-                        intFullStartTime = parseInt(fullTime);
-
-                        //to show the end time
-
-                        hourEnd = post.endDateAndTime.substr(11).slice(0, -6);
-                        intHourEnd = parseInt(hourEnd);
-
-                        minuteEnd = post.endDateAndTime.substr(14).slice(0, -3);
-                        intMinuteEnd = parseInt(minuteEnd);
-
-                        fullEndTime = hourEnd + minuteEnd;
-                        intFullEndTime = parseInt(fullEndTime);
-
-                        yearMonthDay = post.startDateAndTime.slice(0, -9);
-                        //console.log(yearMonthDay);
-
-
-                        // to loop through the start time to the end time by 15 minute intervals and missing the end time
-                        ModulusintFullStartTime = intHourStart * 100;
-
-                        for (i = intFullStartTime; i < intFullEndTime; i++) {
-
-                            if (i % ModulusintFullStartTime == 60) {
-                                ModulusintFullStartTime += 100;
-                                i += 40;
-                                if (i == intFullEndTime) {
-                                    break;
-                                }
-                                else {
-                                    $('#r' + dataLoop + 't_' + i).replaceWith("<td id=r" + dataLoop + 't_' + i + " bgcolor='#0000FF'></td>");
-
-                                }
-                            }
-                            else {
-                                $('#r' + dataLoop + 't_' + i).replaceWith("<td id=r" + dataLoop + 't_' + i + " bgcolor='#0000FF'></td>");
-
-
-                            }
-                            i += 14;
-                        }
-
-                    });
-
-                });
-                //if table cell is clicked
-
-                $('.blueScheduleTime').on('click', function () {
-
-                    alert('You have clicked!');
-                });
-
-            });
 
         });
 
-
-
     </script>
 }
-

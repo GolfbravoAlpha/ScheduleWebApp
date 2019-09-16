@@ -133,7 +133,6 @@
                        
 
             $("#testButton").click(function () {
-                tableClear(startWorkTime, endWorkTime, days);
 
                 
             });          
@@ -141,7 +140,7 @@
             //button press
             $("#selectionButton").click(function () {
                 //loopTable();
-                //tableClear(startWorkTime, endWorkTime, days);
+                tableClear(startWorkTime, endWorkTime, days);
 
 
                 var datePickerValue = $('#datePickerTwo').val();
@@ -322,7 +321,7 @@
                                     if (i % ModulusintFullStartTime == 60) {
                                         ModulusintFullStartTime += 100;
                                         i += 40;
-                                        if (i == intFullEndTime) {
+                                        if (i == intFullEndTimeM) {
                                             break;
                                         }
                                         else {                                              
