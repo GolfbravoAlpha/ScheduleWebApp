@@ -1,24 +1,28 @@
 ﻿
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Individual";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+    
+<script src="~/lib/Jquery-ui/jquery-3.3.1.min.js"></script>
+<link href="~/lib/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
 <link href="~/css/StyleSheetTemplate.css" rel="stylesheet" />
 
-<h1 align="center">day schedule</h1>
-<br />
-
+<header>
+    <h1 id="MainHeader" align="center">Individual Schedule for staff _______</h1>
+</header>
 <div align="right">
-    <input id="dayButton" class="disabled " type="button" value="Day" />
+    <input id="dayButton" type="button" onclick="location.href='https://localhost:44394/StaffHoursWorked';" value="Day" />
     <input id="WeekButton" type="button" onclick="location.href='https://localhost:44394/StaffHoursWorked/Week';" value="Week" />
     <input id="MonthButton" type="button" onclick="location.href='https://localhost:44394/StaffHoursWorked/Month';" value="Month" />
-    <input id="IndividualButton" type="button" onclick="location.href='https://localhost:44394/StaffHoursWorked/Individual';" value="Individual" />
+    <input id="IndividualButton" class="disabled" type="button" value="Individual" />
 </div>
+
+<br />
 
 <table id="scheduleTable" border="1" width="1200">
     <tr>
-        <th>Staff</th>
+        <th>Days</th>
         <th colspan="4">8:00am </th>
 
         <th colspan="4">9:00am </th>
@@ -51,6 +55,21 @@
 
 </table>
 
+<div align="center">
+    <p></p>
+    <p></p>
+    <select id='staffList'>
+        <option id="">none</option>
+    </select>
+    <input id="datePickerTwo" value="Click to enter date" />
+    <button id="selectionButton">Go to selected week</button>
+    <button id="testButton">clear</button>
+
+
+</div>
+
+
+
 @section scripts
 {
     <script src="~/lib/Jquery-ui/jquery-ui-1.12.1.js"></script>
@@ -71,7 +90,7 @@
                 for (j = 0; j < 7; j++) {
                     i = startWorkTime;
                     modulusTable = i;
-                    $('#' + j + '_RowTable').append('<td id="r' + j + 'staff"' + '></td>');
+                    $('#' + j + '_RowTable').append('<td id="r' + j + 'days"' + '>' + days[j] + '</td>');
 
                     for (i; i <= endWorkTime; i++) {
                         if (i % modulusTable == 60) {

@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewData["Title"] = "Week";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/StyleSheetTemplate.css" rel="stylesheet" />
+
+<h2>Week</h2>
+<div align="right">
+    <input id="dayButton" type="button" onclick="location.href='https://localhost:44394/StaffHoursWorked';" value="Day" />
+    <input id="WeekButton" class="disabled" type="button" value="Week" />
+    <input id="MonthButton" type="button" onclick="location.href='https://localhost:44394/StaffHoursWorked/Month';" value="Month" />
+    <input id="IndividualButton" type="button" onclick="location.href='https://localhost:44394/StaffHoursWorked/Individual';" value="Individual" />
+</div>
+

@@ -12,5 +12,17 @@ namespace ScheduleWebApp.Controllers
         {
             return View();
         }
+        public IActionResult Week()
+        {
+            return View();
+        }
+        public IActionResult Month()
+        {
+            return View();
+        }
+        public IActionResult Individual()
+        {
+            return View();
+        }
     }
 }

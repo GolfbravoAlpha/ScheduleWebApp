@@ -32,6 +32,22 @@ namespace ScheduleWebApp.Controllers
                 .ToList();
         }
 
+        //get all staff on for a particular day  
+        [HttpGet("{startDateTimeQuery}")]
+        public IEnumerable<staffHoursWorked> GetStaffHoursWorked(DateTime startDateTimeQuery)
+        {
+            DateTime lastDayDateTimeQuery = startDateTimeQuery.AddDays(1);
+
+            var staffHours = from s in _context.staffHoursWorkedTbl
+                .Include(c => c.staff)
+                .Where(s => s.startDateAndTime >= startDateTimeQuery &&
+                s.startDateAndTime <= lastDayDateTimeQuery)
+                .ToList()
+                select s;
+
+            return staffHours;
+        }
+
         // GET: api/StaffHoursWorked/5
         [HttpGet("{id}/{startDateTimeQuery}")]
         public IEnumerable<staffHoursWorked> GetStaffHoursWorked(int id, DateTime startDateTimeQuery)
@@ -48,6 +64,8 @@ namespace ScheduleWebApp.Controllers
            
             return staffHours;            
         }
+
+        
 
         // POST: api/StaffHoursWorked
         [HttpPost]        
