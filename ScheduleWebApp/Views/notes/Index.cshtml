@@ -6,62 +6,55 @@
 
 <script src="~/lib/Jquery-ui/jquery-3.3.1.min.js"></script>
 <link href="~/lib/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
-
+<link href="~/css/StyleSheetTemplate.css" rel="stylesheet" />
 <h2>Test</h2>
 
-@*<table id="scheduleTable" border="1" width="1200">
+
+
+
+
+<table id="scheduleTable" border="1" width="1200">
     <tr>
-        <th>Days</th>
-        <th>1 </th>
-        <th>2 </th>
+
+        <th colspan="60">8:00am </th>
+
+        <th colspan="60">9:00am </th>
+
+        <th colspan="60">10:00am</th>
+
+        <th colspan="60">11:00am</th>
+
+        <th colspan="60">12:00pm</th>
+
+        <th colspan="60">1:00pm</th>
+
+        <th colspan="60">2:00pm </th>
+
+        <th colspan="60">3:00pm </th>
+
+        <th colspan="60">4:00pm </th>
+
+        <th colspan="60">5:00pm </th>
+
+        <th colspan="60">6:00pm </th>
+
 
     </tr>
-
-
     <tr id="0_RowTable"></tr>
+
 
 </table>
 
-<button id="testButton">Test</button>*@
-
-
-@section scripts
+    @section scripts
 {
-    <script src="~/lib/Jquery-ui/jquery-ui-1.12.1.js"></script>
+        <script src="~/lib/Jquery-ui/jquery-ui-1.12.1.js"></script>
 
 
-    <script>
-        $(document).ready(function () {
-
-            date1String = "8:15";
-            date2String = "8:30";
+        <script>
+                loopDayTable();
 
 
-            var test = Hourdiff(date1String, date2String)
-            console.log(test);
-          
 
-            function Hourdiff(start, end){
-                start = start.split(":");
-                end = end.split(":");
-                var startDate = new Date(0, 0, 0, start[0], start[1], 0);
-                var endDate = new Date(0, 0, 0, end[0], end[1], 0);
-                var diff = endDate.getTime() - startDate.getTime();
-                var hours = Math.floor(diff / 1000 / 60 / 60);
-                diff -= hours * 1000 * 60 * 60;
-                var minutes = Math.floor(diff / 1000 / 60);
 
-                // If using time pickers with 24 hours format, add the below line get exact hours
-                if (hours < 0)
-                    hours = hours + 24;
-
-                return (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
-            }
-      
-            
-            
-            
-        });
-
-    </script>
-}
+        </script>
+    }

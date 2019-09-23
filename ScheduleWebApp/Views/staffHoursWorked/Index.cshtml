@@ -18,28 +18,30 @@
 
 <table id="scheduleTable" border="1" width="1200">
     <tr>
-        <th>Staff</th>
-        <th colspan="4">8:00am </th>
+        <th width="10">Staff</th>
+        <th colspan="60" width="5">8:00am </th>
 
-        <th colspan="4">9:00am </th>
+        <th colspan="60">9:00am </th>
 
-        <th colspan="4">10:00am</th>
+        <th colspan="60">10:00am</th>
 
-        <th colspan="4">11:00am</th>
+        <th colspan="60">11:00am</th>
 
-        <th colspan="4">12:00pm</th>
+        <th colspan="60">12:00pm</th>
 
-        <th colspan="4">1:00pm</th>
+        <th colspan="60">1:00pm</th>
 
-        <th colspan="4">2:00pm </th>
+        <th colspan="60">2:00pm </th>
 
-        <th colspan="4">3:00pm </th>
+        <th colspan="60">3:00pm </th>
 
-        <th colspan="4">4:00pm </th>
+        <th colspan="60">4:00pm </th>
 
-        <th colspan="4">5:00pm </th>
+        <th colspan="60">5:00pm </th>
 
-        <th colspan="4">6:00pm </th>
+        <th colspan="60">6:00pm </th>
+
+     
 
         <th>Hours</th>
     </tr>
@@ -54,366 +56,49 @@
 @section scripts
 {
     <script src="~/lib/Jquery-ui/jquery-ui-1.12.1.js"></script>
+    <script src="~/js/templateTable.js"></script>
     <script>
 
-        $(document).ready(function () {
 
-            //Initial table creation
-            startWorkTime = 800;
-            endWorkTime = 1900;
-
-            var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-
-            loopTable();
-
-            function loopTable() {
-
-                for (j = 0; j < 7; j++) {
-                    i = startWorkTime;
-                    modulusTable = i;
-                    $('#' + j + '_RowTable').append('<td id="r' + j + 'staff"' + '></td>');
-
-                    for (i; i <= endWorkTime; i++) {
-                        if (i % modulusTable == 60) {
-                            modulusTable += 100;
-                            i += 39;
-                        }
-                        else if (i == endWorkTime) {
-                            $('#' + j + '_RowTable').append("<td id=hours_" + days[j] + ">" + "&nbsp;" + "</td>");
-                        }
-                        else {
-                            $('#' + j + '_RowTable').append('<td id=t_' + i + '_d_' + days[j] + '>' + "&nbsp;" + '</td>');
-                            i += 14;
-                        }
-
-                    }
-                    k = j + 1;
-
-                    $('#' + j + '_RowTable').after('<tr id="' + k + '_RowTable"></tr>')
-                }
-
-
-
-
-            }
+        $(document).ready(function () {         
+                    
 
 
 
 
 
 
-
-
-            //to choose date
-            $('#datePickerTwo').datepicker({
-                dateFormat: "yy-mm-dd",
-                changeMonth: true,
-                changeYear: true,
-                yearRange: "2019:2030",
-                beforeShowDay: function (date) { return [date.getDay() == 1, ""] }
-
-            });
+            
 
 
 
-
-            //Populate staff member list
             $.ajax({
                 method: 'GET',
-                url: 'https://localhost:44394/api/Staff',
+                url: 'https://localhost:44394/api/StaffHoursWorked/2019-09-09',
                 dataType: 'json'
             }).done(function (data) {
-                $.map(data, function (post, j) {
-                    staffName = post.name;
-                    staffId = post.id;
-                    $('#staffList').append("<option id=" + staffId + ">" + staffName + "</option>");
-                });
+                //get only unique staff id, ignore duplicate staffid
+                const array = data,
+                    uniqueStaffId = [...new Set(array.map(a => a.staffId))]; 
+
+                loopDayTabletest(uniqueStaffId);
+
+                testLoop(uniqueStaffId);
+                $.map(data, function (post, dataLoop) {
+                    staffidhold = post.staffId;
+
+                                           
+                })
             });
+        
 
 
 
-            $("#testButton").click(function () {
 
-                tableClear(startWorkTime, endWorkTime, days);
-            });
+                    
+           
 
-            //button press
-            $("#selectionButton").click(function () {
-                //loopTable();
-                tableClear(startWorkTime, endWorkTime, days);
-
-
-                var datePickerValue = $('#datePickerTwo').val();
-                var staffValue = $('option:selected').attr("id");
-                var staffNameSelected = $('#staffList').val();
-
-
-                $('#MainHeader').replaceWith("<h1 id='MainHeader' align='center'>Schedule for staff " + staffNameSelected + "</h1>");
-
-                //set Table id acording to the selected date
-                //the month, in the middle starts has minus one to correspond to the correct month
-                var mondayDate = new Date(datePickerValue);
-
-                //to get the sunday date
-                function addDays(date) {
-                    var result = new Date(date);
-                    result.setDate(result.getDate() + 7);
-                    return result;
-                }
-
-                var sundayDate = addDays(mondayDate).toString();
-                var yearPartSundayDate = sundayDate.substr(11).slice(0, -40);
-                var dayPartSundayDate = sundayDate.substr(8).slice(0, -45);
-
-                var firstPartSundayDate = new Date(sundayDate);
-                var monthNumberFirstPartSundayDate = firstPartSundayDate.getMonth() + 1;
-
-                var sundayFullDate = new Date(yearPartSundayDate, monthNumberFirstPartSundayDate - 1, dayPartSundayDate);
-
-
-
-                var dayTableIdentifier = [];
-
-                for (var dayLoop = new Date(mondayDate); dayLoop <= sundayFullDate; dayLoop.setDate(dayLoop.getDate() + 1)) {
-                    var dayLoopToString = dayLoop.toDateString();
-                    var dayPartDayLoop = dayLoopToString.substr(8).slice(0, -5);
-                    dayTableIdentifier.push(dayPartDayLoop);
-
-                }
-                //console.log(dayTableIdentifier);
-
-
-                $.ajax({
-                    method: 'GET',
-                    url: 'https://localhost:44394/api/StaffHoursWorked/' + staffValue + '/' + datePickerValue,
-                    dataType: 'json'
-                }).done(function (data) {
-                    //time difference intial
-                    HourDiffValHolderMonday = "0:00";
-                    HourDiffValHolderTuesday = "0:00";
-                    HourDiffValHolderWednesday = "0:00";
-                    HourDiffValHolderThursday = "0:00";
-                    HourDiffValHolderFriday = "0:00";
-                    HourDiffValHolderSaturday = "0:00";
-                    HourDiffValHolderSunday = "0:00";
-
-                    $.map(data, function (post) {
-
-
-                        //console.log(data);
-                        //create the correct data needed, you have to split the data in two parts and then join them together to get rid of the colon
-
-                        //convert the first part of the start time into an int
-                        hourStart = post.startDateAndTime.substr(11).slice(0, -6);
-                        intHourStart = parseInt(hourStart);
-
-                        //convert the second part of the start time into an int
-
-                        minuteStart = post.startDateAndTime.substr(14).slice(0, -3);
-                        intMinuteStart = parseInt(minuteStart);
-
-                        //convert the whole time into an int and get rid of colon
-                        fullTime = hourStart + minuteStart;
-                        intFullStartTime = parseInt(fullTime);
-
-                        //to show the end time
-
-                        hourEnd = post.endDateAndTime.substr(11).slice(0, -6);
-                        intHourEnd = parseInt(hourEnd);
-
-                        minuteEnd = post.endDateAndTime.substr(14).slice(0, -3);
-                        intMinuteEnd = parseInt(minuteEnd);
-
-                        fullEndTime = hourEnd + minuteEnd;
-                        intFullEndTime = parseInt(fullEndTime);
-
-                        //time difference calculation
-                        startTime = post.startDateAndTime.substr(11).slice(0, -3);
-                        endTime = post.endDateAndTime.substr(11).slice(0, -3);
-                        var HourDiffVal = Hourdiff(startTime, endTime);
-                        //HourDiffVal += HourDiffVal;
-
-
-                        //yearMonthDay = post.startDateAndTime.slice(0, -9);
-                        DayInData = post.startDateAndTime.substr(8).slice(0, -9);
-
-                        //case statement
-                        switch (DayInData) {
-                            case dayTableIdentifier[0]:
-                                //console.log("Monday has been chosen");
-                                var DayName = "Monday";
-                                loopDataOntoTable(intFullStartTime, intFullEndTime, intHourStart, DayName);
-
-                                HourDiffValHolderMonday = AddingTimes(HourDiffValHolderMonday, HourDiffVal);
-                                //console.log(HourDiffValHolderMonday + " Monday");
-                                $('#hours_Monday').replaceWith("<td id='hours_Monday'>" + HourDiffValHolderMonday + "</td>")
-                                break;
-                            case dayTableIdentifier[1]:
-                                //console.log("Tuesday has been chosen");
-                                var DayName = "Tuesday";
-                                loopDataOntoTable(intFullStartTime, intFullEndTime, intHourStart, DayName);
-
-                                HourDiffValHolderTuesday = AddingTimes(HourDiffValHolderTuesday, HourDiffVal);
-                                //console.log(HourDiffValHolderTuesday + " Tuesday");
-                                $('#hours_Tuesday').replaceWith("<td id='hours_Tuesday'>" + HourDiffValHolderTuesday + "</td>")
-                                break;
-                            case dayTableIdentifier[2]:
-                                //console.log("Wednesday has been chosen");
-                                var DayName = "Wednesday";
-                                loopDataOntoTable(intFullStartTime, intFullEndTime, intHourStart, DayName);
-
-                                HourDiffValHolderWednesday = AddingTimes(HourDiffValHolderWednesday, HourDiffVal);
-                                //console.log(HourDiffValHolderWednesday + " Wednesday");
-                                $('#hours_Wednesday').replaceWith("<td id='hours_Wednesday'>" + HourDiffValHolderWednesday + "</td>")
-                                break;
-                            case dayTableIdentifier[3]:
-                                //console.log("Thursday has been chosen");
-                                var DayName = "Thursday";
-                                loopDataOntoTable(intFullStartTime, intFullEndTime, intHourStart, DayName);
-
-                                HourDiffValHolderThursday = AddingTimes(HourDiffValHolderThursday, HourDiffVal);
-                                //console.log(HourDiffValHolderThursday + " Thursday");
-                                $('#hours_Thursday').replaceWith("<td id='hours_Thursday'>" + HourDiffValHolderThursday + "</td>")
-
-                                break;
-                            case dayTableIdentifier[4]:
-                                //console.log("Friday has been chosen");
-                                var DayName = "Friday";
-                                loopDataOntoTable(intFullStartTime, intFullEndTime, intHourStart, DayName);
-
-                                HourDiffValHolderFriday = AddingTimes(HourDiffValHolderFriday, HourDiffVal);
-                                //console.log(HourDiffValHolderFriday + " Friday");
-                                $('#hours_Friday').replaceWith("<td id='hours_Friday'>" + HourDiffValHolderFriday + "</td>")
-                                break;
-                            case dayTableIdentifier[5]:
-                                //console.log("Saturday has been chosen");
-                                var DayName = "Saturday";
-                                loopDataOntoTable(intFullStartTime, intFullEndTime, intHourStart, DayName);
-
-                                HourDiffValHolderSaturday = AddingTimes(HourDiffValHolderSaturday, HourDiffVal);
-                                //console.log(HourDiffValHolderSaturday + " Saturday");
-                                $('#hours_Saturday').replaceWith("<td id='hours_Saturday'>" + HourDiffValHolderSaturday + "</td>")
-
-                                break;
-                            case dayTableIdentifier[6]:
-                                //console.log("Sunday has been chosen");
-                                var DayName = "Sunday";
-                                loopDataOntoTable(intFullStartTime, intFullEndTime, intHourStart, DayName);
-
-                                HourDiffValHolderSunday = AddingTimes(HourDiffValHolderSunday, HourDiffVal);
-                                //console.log(HourDiffValHolderSunday + " Sunday");
-                                $('#hours_Sunday').replaceWith("<td id='hours_Sunday'>" + HourDiffValHolderSunday + "</td>")
-                                break;
-
-                        }
-
-                    });
-
-                });
-                //if table cell is clicked
-
-                $('.blueScheduleTime').on('click', function () {
-
-                    alert('You have clicked!');
-                });
-
-
-            });
-
-            //methods
-            // to loop through the start time to the end time by 15 minute intervals and missing the end time
-
-            function loopDataOntoTable(intFullStartTimeM, intFullEndTimeM, intHourStartM, DayNameM) {
-
-                ModulusintFullStartTime = intHourStartM * 100;
-
-                for (i = intFullStartTimeM; i < intFullEndTimeM; i++) {
-
-                    if (i % ModulusintFullStartTime == 60) {
-                        ModulusintFullStartTime += 100;
-                        i += 40;
-                        if (i == intFullEndTime) {
-                            break;
-                        }
-                        else {
-
-                            $('#t_' + i + '_d_' + DayNameM).replaceWith("<td id=t_" + i + '_d_' + DayNameM + " bgcolor='#0000FF'></td>");
-                        }
-                    }
-                    else {
-                        $('#t_' + i + '_d_' + DayNameM).replaceWith("<td id=t_" + i + '_d_' + DayNameM + " bgcolor='#0000FF'></td>");
-
-                    }
-                    i += 14;
-                }
-
-            };
-
-
-
-
-            //clearing table method
-            function tableClear(intFullStartTimeM, intFullEndTimeM, DayNameM) {
-
-                for (j = 0; j < 7; j++) {
-
-                    ModulusintFullStartTime = intFullStartTimeM;
-
-                    for (i = intFullStartTimeM; i < intFullEndTimeM; i++) {
-
-                        if (i % ModulusintFullStartTime == 60) {
-                            ModulusintFullStartTime += 100;
-                            i += 40;
-                            if (i == intFullEndTimeM) {
-                                break;
-                            }
-                            else {
-
-                                $('#t_' + i + '_d_' + DayNameM[j]).replaceWith("<td id=t_" + i + '_d_' + DayNameM[j] + "></td>");
-                            }
-                        }
-                        else {
-                            $('#t_' + i + '_d_' + DayNameM[j]).replaceWith("<td id=t_" + i + '_d_' + DayNameM[j] + "></td>");
-
-                        }
-                        i += 14;
-                    }
-
-                    $('#hours_' + days[j]).replaceWith("<td id=hours_" + days[j] + ">" + "&nbsp;" + "</td>");
-
-
-                }
-
-            };
-
-
-            //calculate hour difference
-            function Hourdiff(start, end) {
-                start = start.split(":");
-                end = end.split(":");
-                var startDate = new Date(0, 0, 0, start[0], start[1], 0);
-                var endDate = new Date(0, 0, 0, end[0], end[1], 0);
-                var diff = endDate.getTime() - startDate.getTime();
-                var hours = Math.floor(diff / 1000 / 60 / 60);
-                diff -= hours * 1000 * 60 * 60;
-                var minutes = Math.floor(diff / 1000 / 60);
-
-                // If using time pickers with 24 hours format, add the below line get exact hours
-                if (hours < 0)
-                    hours = hours + 24;
-
-                return (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
-            }
-
-            //calculate total hours
-            function AddingTimes(t1, t2) {
-                var m = (t1.substring(0, t1.indexOf(':')) - 0) * 60 +
-                    (t1.substring(t1.indexOf(':') + 1, t1.length) - 0) +
-                    (t2.substring(0, t2.indexOf(':')) - 0) * 60 +
-                    (t2.substring(t2.indexOf(':') + 1, t2.length) - 0);
-                var h = Math.floor(m / 60);
-                return (h + ':' + (m - (h * 60)));
-            }
+                       
 
 
         });
